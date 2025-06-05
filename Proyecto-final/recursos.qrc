@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imagenes/fondo3.jpg</file>
+        <file>imagenes/fondo4.jpg_large</file>
+        <file>imagenes/fondo menu.jpg</file>
+        <file>sonidos/goku_dragon-ball-z-cha-la-head-cha-la.mp3</file>
+        <file>sonidos/sonido salto.mp3</file>
+        <file>imagenes/escena.PNG</file>
+        <file>imagenes/bloque escena.PNG</file>
+        <file>imagenes/fuego sin fondo.png</file>
+        <file>imagenes/goku sin fondo.png</file>
+    </qresource>
+</RCC>
