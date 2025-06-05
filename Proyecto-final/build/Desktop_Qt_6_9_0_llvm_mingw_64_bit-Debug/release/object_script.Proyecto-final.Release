@@ -1,0 +1,13 @@
+release/enemigos.o
+release/escenario.o
+release/juego.o
+release/jugador.o
+release/main.o
+release/mainwindow.o
+release/sprite.o
+release/qrc_recursos.o
+release/moc_enemigos.o
+release/moc_juego.o
+release/moc_jugador.o
+release/moc_mainwindow.o
+release/moc_sprite.o

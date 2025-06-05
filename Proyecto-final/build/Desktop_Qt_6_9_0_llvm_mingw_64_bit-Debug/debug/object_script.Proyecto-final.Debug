@@ -1,0 +1,13 @@
+debug/enemigos.o
+debug/escenario.o
+debug/juego.o
+debug/jugador.o
+debug/main.o
+debug/mainwindow.o
+debug/sprite.o
+debug/qrc_recursos.o
+debug/moc_enemigos.o
+debug/moc_juego.o
+debug/moc_jugador.o
+debug/moc_mainwindow.o
+debug/moc_sprite.o
