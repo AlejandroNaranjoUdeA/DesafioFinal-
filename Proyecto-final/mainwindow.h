@@ -7,6 +7,8 @@
 #include "juego.h"
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QLineEdit>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +25,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
     void mostrarMenu();
     void iniciarNivel1();
@@ -33,8 +36,21 @@ private:
     QWidget *menuPrincipal;
     Juego *nivel1;
 
+    QWidget *pantallaAuth;
+    QWidget *formularioLogin;
+    QWidget *formularioRegistro;
+    QLineEdit *entradaUsuarioLogin;
+    QLineEdit *entradaContrasenaLogin;
+    QLineEdit *entradaUsuarioRegistro;
+    QLineEdit *entradaContrasenaRegistro;
+
     QMediaPlayer *musicaMenu;
     QAudioOutput *audioOutput;
+
+    QString usuarioActivo;
+
+
+
 
 };
 #endif // MAINWINDOW_H

@@ -54,7 +54,7 @@ Juego::Juego(QWidget *parent) : QGraphicsView(parent) {
     QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::white : Qt::black;
     textoVidas->setDefaultTextColor(colorTexto);
     textoVidas->setFont(QFont("Arial", 12));
-    textoVidas->setPos(20, 10);
+    textoVidas->setPos(120, 10);
     escena->addItem(textoVidas);
     actualizarTextoVidas();  // mostrar el valor inicial
 
@@ -81,17 +81,10 @@ Juego::Juego(QWidget *parent) : QGraphicsView(parent) {
 }
 
 void Juego::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Right) {
-        if (goku->getItem()->x() < width() / 2) {
-            goku->mover(event, true);  // Se mueve Goku
-        } else {
-            goku->mover(event, false);  // Solo actualiza dirección
-            moverFondo();
-            escenario->actualizarEscenario(goku->getItem()->x());
-        }
-    } else {
-        goku->mover(event, true);  // Se mueve normalmente hacia la izquierda o salta
-    }}
+    goku->mover(event, true);  // Se mueve Goku
+
+}
+
 
 void Juego::actualizarTextoVidas() {
     textoVidas->setPlainText("Vidas: " + QString::number(goku->getVidas()));
@@ -124,5 +117,12 @@ void Juego::moverEscenario() {
     escenario->actualizarEscenario(goku->getItem()->x());
 }
 
-
+void Juego::mostrarNombreUsuario(const QString& nombre) {
+    QGraphicsTextItem* textoUsuario = new QGraphicsTextItem("Usuario: " + nombre);
+    QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::white : Qt::black;
+    textoUsuario->setDefaultTextColor(colorTexto);
+    textoUsuario->setFont(QFont("Arial", 12));
+    textoUsuario->setPos(10, 10);  // esquina superior izquierda
+    escena->addItem(textoUsuario);
+}
 
