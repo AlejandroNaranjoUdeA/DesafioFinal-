@@ -18,6 +18,7 @@ public:
     void moverFondo();
     void actualizarJuego();
     void moverEscenario();
+    void mostrarNombreUsuario(const QString& nombre);
 
 
 

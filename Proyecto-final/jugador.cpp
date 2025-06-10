@@ -1,5 +1,7 @@
 #include "jugador.h"
 #include "juego.h"
+//para mostrar mensaje:
+#include <QMessageBox>  // arriba del archivo
 
 Jugador::Jugador(QGraphicsScene* escena, Juego* juego): QObject(), juegoRef(juego)
 {
@@ -39,6 +41,9 @@ void Jugador::mover(QKeyEvent* event, bool moverFisicamente) {
         sprite->setFila(1);  // animación caminar izquierda
     } else if (event->key() == Qt::Key_Right) {
         dx = 10;
+        if (moverFisicamente) {
+            sprite->setX(sprite->x() + dx);
+        }
         sprite->setFila(2);  // animación caminar derecha
     }
 
@@ -52,7 +57,7 @@ void Jugador::mover(QKeyEvent* event, bool moverFisicamente) {
                 break;
             }
         }
-
+//hola,
         if (!hayColision) {
             if (!moverFisicamente) {
                 sprite->moveBy(dx, 0);  // mover sprite si no se mueve el mundo
@@ -127,6 +132,8 @@ void Jugador::perderVida() {
     qDebug() << "Vidas restantes:" << vidas;
     if (vidas <= 0) {
         qDebug() << "¡Game Over!";
+        QMessageBox::information(juegoRef, "Fin del juego", "¡Te has quedado sin vidas!");
+        juegoRef->close();  // cierra la ventana principal del juego
         // emit gameOver();  // si querés más adelante
     }
 }

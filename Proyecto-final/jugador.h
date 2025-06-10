@@ -9,6 +9,7 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 
+
 class Juego;
 
 class Jugador : public QObject {
