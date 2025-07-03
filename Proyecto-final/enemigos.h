@@ -1,30 +1,45 @@
 #ifndef ENEMIGOS_H
 #define ENEMIGOS_H
 
-#include <QObject>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QTimer>
-#include "sprite.h"
 #include "jugador.h"
+#include "sprite.h"
 
-class Enemigos : public QObject, public QGraphicsPixmapItem {
+enum TipoEnemigo { FUEGO, DODORIA, ZARBON };
+
+class Enemigos : public QObject {
     Q_OBJECT
-
-public:
-    explicit Enemigos(QGraphicsScene* escena, Jugador* jugador);  // escena para agregar sprite
-    void iniciarCaida();
-    void actualizarPosicion();
 
 private:
     Sprite* sprite;
-    qreal posicionX;
-    qreal posicionY;
-    qreal velocidadY;
-    qreal gravedad;
-
-    QTimer* temporizador;
     Jugador* jugador;
+    TipoEnemigo tipo;
+    QTimer* temporizador;
+    QTimer* timerDisparo = nullptr;
+
+    float velocidadY;
+    float gravedad;
+    int vidas;
+
+    float posicionX;
+    float posicionY;
+
+    QList<QGraphicsPixmapItem*> bloquesEscenario;
+
+public:
+    Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo,
+             QString rutaImagen, int anchoSprite, int altoSprite);
+
+    void iniciarComportamiento();
+    void setBloques(const QList<QGraphicsPixmapItem*>& bloques);
+
+    Sprite* getSprite() const { return sprite; }
+
+private slots:
+    void actualizarPosicion();
+    void disparar();
 };
 
 #endif // ENEMIGOS_H

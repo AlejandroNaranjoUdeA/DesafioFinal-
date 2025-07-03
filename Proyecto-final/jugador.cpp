@@ -35,15 +35,10 @@ void Jugador::mover(QKeyEvent* event, bool moverFisicamente) {
 
     if (event->key() == Qt::Key_Left) {
         dx = -10;
-        if (moverFisicamente) {
-            sprite->setX(sprite->x() + dx);  // mueve físicamente a Goku
-        }
         sprite->setFila(1);  // animación caminar izquierda
-    } else if (event->key() == Qt::Key_Right) {
+    }
+    else if (event->key() == Qt::Key_Right) {
         dx = 10;
-        if (moverFisicamente) {
-            sprite->setX(sprite->x() + dx);
-        }
         sprite->setFila(2);  // animación caminar derecha
     }
 
@@ -57,13 +52,11 @@ void Jugador::mover(QKeyEvent* event, bool moverFisicamente) {
                 break;
             }
         }
-//hola,
+
         if (!hayColision) {
-            if (!moverFisicamente) {
-                sprite->moveBy(dx, 0);  // mover sprite si no se mueve el mundo
-                if (dx > 0 && juegoRef) {
-                    juegoRef->moverFondo();  // mover fondo si Goku va hacia la derecha
-                }
+            sprite->moveBy(dx, 0);  // Goku se mueve en la escena
+            if (juegoRef) {
+                juegoRef->moverFondo(-dx);  // Mover el fondo en dirección contraria
             }
         }
     }
@@ -77,6 +70,7 @@ void Jugador::mover(QKeyEvent* event, bool moverFisicamente) {
         sonidoSalto->play();
     }
 }
+
 
 
 void Jugador::actualizar() {
@@ -143,5 +137,12 @@ void Jugador::perderVida() {
 
 void Jugador::setBloques(const QList<QGraphicsPixmapItem*>& bloques) {
     this->bloques = bloques;
+}
+
+int Jugador::obtenerDeltaX() {
+    qreal actualX = sprite->x();
+    int dx = static_cast<int>(actualX - posicionXAnterior);
+    posicionXAnterior = actualX;
+    return dx;
 }
 

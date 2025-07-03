@@ -26,6 +26,8 @@ public:
     void setBloques(const QList<QGraphicsPixmapItem*>& bloques);
     void moverEscenario() ;
 
+    int obtenerDeltaX();
+
 
 
 
@@ -41,6 +43,9 @@ private:
 
     //detectar bloques
     QList<QGraphicsPixmapItem*> bloques;
+
+    qreal posicionXAnterior = 0;
+
 
 
 signals:

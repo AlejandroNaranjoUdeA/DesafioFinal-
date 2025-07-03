@@ -7,6 +7,7 @@
 #include "jugador.h"
 #include "enemigos.h"
 #include "escenario.h"
+#include "proyectil.h"
 
 
 class Juego : public QGraphicsView {
@@ -15,10 +16,13 @@ public:
     explicit Juego(QWidget *parent = nullptr);
     void keyPressEvent(QKeyEvent *event) override;
 
-    void moverFondo();
+    void moverFondo(int dx);
     void actualizarJuego();
     void moverEscenario();
     void mostrarNombreUsuario(const QString& nombre);
+
+    QVector<QGraphicsPixmapItem*> fondoItems;
+
 
 
 

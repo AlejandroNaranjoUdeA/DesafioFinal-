@@ -17,6 +17,7 @@ SOURCES += \
     jugador.cpp \
     main.cpp \
     mainwindow.cpp \
+    proyectil.cpp \
     sprite.cpp
 
 HEADERS += \
@@ -25,6 +26,7 @@ HEADERS += \
     juego.h \
     jugador.h \
     mainwindow.h \
+    proyectil.h \
     sprite.h
 
 FORMS += \

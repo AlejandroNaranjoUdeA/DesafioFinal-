@@ -9,13 +9,14 @@ Juego::Juego(QWidget *parent) : QGraphicsView(parent) {
 
     // Crear escena
     escena = new QGraphicsScene(this);
-    escena->setSceneRect(0, 0, 1024, 768);  // Tamaño de la escena
+    escena->setSceneRect(0, 0, 8000, 768);  // Tamaño de la escena
     setScene(escena);
 
 
 
+    /*
     //agregar fondo
-    QPixmap fondoPixmap(":/imagenes/fondo3.jpg");
+    QPixmap fondoPixmap(":/imagenes/fondo fuego.jpeg");
     fondoPixmap = fondoPixmap.scaled(1024, 768);  // Escalar fondo al tamaño de la ventana
 
     // Crear los dos fondos lado a lado
@@ -30,11 +31,31 @@ Juego::Juego(QWidget *parent) : QGraphicsView(parent) {
 
     escena->addItem(fondo1);
     escena->addItem(fondo2);
+    */
 
-    // Crear jugador (sprite con animación)
+    QPixmap fondoCompleto(":/imagenes/fondo fuego.jpeg");
+
+    // Tamaño de bloque visible (ventana): 1024x716
+    int anchoBloque = 1024;
+    int altoFondo = fondoCompleto.height();
+
+    // Calcular cuántos bloques se necesitan
+    int numBloques = fondoCompleto.width() / anchoBloque + 1;
+
+    for (int i = 0; i < numBloques; ++i) {
+        // Extraer porciones del fondo
+        QPixmap fragmento = fondoCompleto.copy(i * anchoBloque, 0, anchoBloque, altoFondo);
+        QGraphicsPixmapItem* fondoItem = new QGraphicsPixmapItem(fragmento);
+        fondoItem->setZValue(-1);  // al fondo
+        fondoItem->setPos(i * anchoBloque, 0);
+        fondoItems.append(fondoItem);
+        escena->addItem(fondoItem);
+    }
+
     goku = new Jugador(escena, this);
-    goku->setPos(100, 524);  // Posición inicial
+    goku->setPos(100, 350);// Posición inicial
     escena->addItem(goku->getItem());
+
 
     // Timer para actualizar física
     timer = new QTimer(this);
@@ -51,37 +72,72 @@ Juego::Juego(QWidget *parent) : QGraphicsView(parent) {
 
     // Mostrar vidas en pantalla
     textoVidas = new QGraphicsTextItem();
-    QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::white : Qt::black;
+    QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::black : Qt::white;
     textoVidas->setDefaultTextColor(colorTexto);
     textoVidas->setFont(QFont("Arial", 12));
     textoVidas->setPos(120, 10);
     escena->addItem(textoVidas);
     actualizarTextoVidas();  // mostrar el valor inicial
 
+
+    //DODORIA
+    Enemigos* dodoria = new Enemigos(escena, goku, DODORIA, ":/imagenes/dodoria sin fondo.png", 57, 63);
+    dodoria->iniciarComportamiento();
+
+    Enemigos* zarbon = new Enemigos(escena, goku, ZARBON, ":/imagenes/zarbon sin fondo.png", 41, 60);
+    zarbon->iniciarComportamiento();
+
     //crear fuego:
     generadorEnemigos = new QTimer(this);
     connect(generadorEnemigos, &QTimer::timeout, [=]() {
-        Enemigos* enemigo = new Enemigos(escena, goku);  // pasar escena si usas Sprite
-        escena->addItem(enemigo);
-        enemigo->iniciarCaida();
+
+        //FUEGO:
+        Enemigos* enemigo = new Enemigos(escena, goku, FUEGO, "", 42, 60);  // pasar escena si usas Sprite
+        //escena->addItem(enemigo);
+        enemigo->iniciarComportamiento();
+
+        escena->addItem(enemigo->getSprite());
+
         // Intervalo aleatorio entre 500ms y 1500ms
-        int intervalo = QRandomGenerator::global()->bounded(500, 1500);
+        int intervalo = QRandomGenerator::global()->bounded(200, 2000);
         generadorEnemigos->start(intervalo);
     });
 
-    generadorEnemigos->start(1000); // Generar un enemigo cada 1 segundos
+    generadorEnemigos->start(500); // Generar un enemigo cada 1 segundos
 
     // Crear escenario (piso y demás)
     escenario = new Escenario(escena);
     escenario->crearPiso();
 
+    dodoria->setBloques(escenario->obtenerBloques());
+    zarbon->setBloques(escenario->obtenerBloques());
+
+
     goku->setBloques(escenario->obtenerBloques());
+
+    // Centrar la cámara sobre Goku desde el inicio
+    centerOn(goku->getItem()->x(), goku->getItem()->y());
 
 
 }
 
 void Juego::keyPressEvent(QKeyEvent *event) {
-    goku->mover(event, true);  // Se mueve Goku
+    if (event->key() == Qt::Key_Space) {
+        QPixmap sprite(":/imagenes/kamehameha.png");
+        QGraphicsPixmapItem* iDisparo = new QGraphicsPixmapItem(sprite);
+        iDisparo->setScale(0.6);
+
+        Proyectil* p = new Proyectil(
+            escena,
+            Proyectil::Derecha,
+            sprite,
+            15,  // velocidad
+            2    // daño
+            );
+        p->setPos(goku->getItem()->x() + 50, goku->getItem()->y() + 20);
+    }
+
+    goku->mover(event, true);
 
 }
 
@@ -90,28 +146,43 @@ void Juego::actualizarTextoVidas() {
     textoVidas->setPlainText("Vidas: " + QString::number(goku->getVidas()));
 }
 
-void Juego::moverFondo() {
-    fondo1->moveBy(-2, 0);
-    fondo2->moveBy(-2, 0);
-
-    if (fondo1->x() <= -1024) {
-        fondo1->setX(fondo2->x() + 1024);
+void Juego::moverFondo(int dx) {
+    for (QGraphicsPixmapItem* fondo : fondoItems) {
+        fondo->moveBy(dx, 0);
     }
-    if (fondo2->x() <= -1024) {
-        fondo2->setX(fondo1->x() + 1024);
+
+    for (QGraphicsPixmapItem* fondo : fondoItems) {
+        if (dx < 0 && fondo->x() <= -1024) {
+            // Recolocar a la derecha del más a la derecha
+            qreal maxX = fondoItems[0]->x();
+            for (QGraphicsPixmapItem* f : fondoItems)
+                if (f->x() > maxX)
+                    maxX = f->x();
+            fondo->setX(maxX + 1024);
+        } else if (dx > 0 && fondo->x() >= 1024 * fondoItems.size()) {
+            // Recolocar a la izquierda del más a la izquierda
+            qreal minX = fondoItems[0]->x();
+            for (QGraphicsPixmapItem* f : fondoItems)
+                if (f->x() < minX)
+                    minX = f->x();
+            fondo->setX(minX - 1024);
+        }
     }
 }
+
 
 
 void Juego::actualizarJuego() {
     goku->actualizar();
     escenario->actualizarEscenario(goku->getItem()->x());
-    moverFondo();
-    qreal nuevaX = goku->getItem()->x();
-    if (nuevaX > 512)  // sólo sigue a Goku si pasa de la mitad de la pantalla
-        centerOn(nuevaX, 384);  // 384 es la mitad vertical (768 / 2)
 
+    int dx = goku->obtenerDeltaX();
+    moverFondo(-dx);  // El fondo se mueve al revés de Goku
+
+    qreal nuevaX = goku->getItem()->x();
+    centerOn(nuevaX, 384);
 }
+
 
 void Juego::moverEscenario() {
     escenario->actualizarEscenario(goku->getItem()->x());
@@ -119,7 +190,7 @@ void Juego::moverEscenario() {
 
 void Juego::mostrarNombreUsuario(const QString& nombre) {
     QGraphicsTextItem* textoUsuario = new QGraphicsTextItem("Usuario: " + nombre);
-    QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::white : Qt::black;
+    QColor colorTexto = escena->backgroundBrush().color().value() > 128 ? Qt::black : Qt::white;
     textoUsuario->setDefaultTextColor(colorTexto);
     textoUsuario->setFont(QFont("Arial", 12));
     textoUsuario->setPos(10, 10);  // esquina superior izquierda
