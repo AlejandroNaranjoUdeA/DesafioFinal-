@@ -4,9 +4,15 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QPushButton>
-#include <QLineEdit>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QLineEdit>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QFile>
+#include <QTextStream>
+#include <QMessageBox>
 #include "juego.h"
 
 QT_BEGIN_NAMESPACE
@@ -28,26 +34,29 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stack;
-
     QWidget *menuPrincipal;
     QWidget *pantallaAuth;
     QWidget *formularioLogin;
     QWidget *formularioRegistro;
-    QWidget *pantallaSeleccionNivel;
+    QWidget *selectorNiveles;
 
     QLineEdit *entradaUsuarioLogin;
     QLineEdit *entradaContrasenaLogin;
     QLineEdit *entradaUsuarioRegistro;
     QLineEdit *entradaContrasenaRegistro;
 
+    QPushButton *btnNivel1;
+    QPushButton *btnNivel2;
+    QPushButton *btnNivel3;
+
     QMediaPlayer *musicaMenu;
     QAudioOutput *audioOutput;
 
-    Juego *nivel1 = nullptr;
-    Juego *nivel2 = nullptr;
-    Juego *nivel3 = nullptr;
-
     QString usuarioActivo;
+
+    Juego *nivel1;
+    Juego *nivel2;
+    Juego *nivel3;
 };
 
 #endif // MAINWINDOW_H

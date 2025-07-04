@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 #include <QObject>
 #include <QKeyEvent>
-#include "sprite.h"+
+#include "sprite.h"
 //para reproducir sonido
 #include <QMediaPlayer>
 #include <QAudioOutput>

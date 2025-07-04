@@ -1,9 +1,13 @@
 #ifndef JUEGO_H
 #define JUEGO_H
 
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QTimer>
+#include <QVector>
+#include <QGraphicsTextItem>
 #include "jugador.h"
 #include "enemigos.h"
 #include "escenario.h"
@@ -13,36 +17,28 @@
 class Juego : public QGraphicsView {
     Q_OBJECT
 public:
-    explicit Juego(QWidget *parent = nullptr);
+    explicit Juego(int nivelSeleccionado, QWidget *parent = nullptr);
     void keyPressEvent(QKeyEvent *event) override;
-
     void moverFondo(int dx);
     void actualizarJuego();
     void moverEscenario();
     void mostrarNombreUsuario(const QString& nombre);
-
-    QVector<QGraphicsPixmapItem*> fondoItems;
-
-
 
 
 private:
     QGraphicsScene* escena;
     Jugador* goku;
     QTimer* timer;
-    QTimer* generadorEnemigos; // <-- nuevo
+    QTimer* generadorEnemigos;
     QList<Enemigos*> enemigos;
     Escenario* escenario;
-    QGraphicsTextItem* textoVidas;  // NUEVO
-    QGraphicsPixmapItem* fondo1;
-    QGraphicsPixmapItem* fondo2;
-    QGraphicsPixmapItem* fondo;
+    QGraphicsTextItem* textoVidas;
+    QVector<QGraphicsPixmapItem*> fondoItems;
+    int nivel;  // Nuevo: para distinguir entre nivel 1, 2 o 3
+    QMediaPlayer* musicaFondo;
+    QAudioOutput* audioOutput;
 
-protected:
-    void actualizarTextoVidas();  // NUEVO
-
+    void actualizarTextoVidas();
 };
-
-
 
 #endif // JUEGO_H
