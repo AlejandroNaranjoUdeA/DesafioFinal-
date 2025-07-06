@@ -7,7 +7,7 @@
 
 class Escenario {
 public:
-    Escenario(QGraphicsScene* escena);
+    Escenario(QGraphicsScene* escena, const QString& rutaBloque = "");
     void crearPiso();
 
     void actualizarEscenario(double posicionJugador);
@@ -17,6 +17,8 @@ public:
 private:
     QGraphicsScene* escena;
     QList<QGraphicsPixmapItem*> bloques;
+    QString rutaBloque;
+
 
     int anchoTotal;     // Ancho total del escenario
     int bloqueAncho = 50;

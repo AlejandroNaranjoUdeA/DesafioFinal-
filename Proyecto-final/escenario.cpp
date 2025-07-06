@@ -2,12 +2,13 @@
 #include <QPixmap>
 #include <QRandomGenerator>
 
-Escenario::Escenario(QGraphicsScene* escena) {
+Escenario::Escenario(QGraphicsScene* escena, const QString& rutaBloque) {
     this->escena = escena;
+    this->rutaBloque = rutaBloque;
 }
 
 void Escenario::crearPiso() {
-    QPixmap tileset(":/imagenes/bloque lava.jpg");
+    QPixmap tileset(rutaBloque);
     QPixmap bloqueSuelo = tileset.copy(0, 0, 105, 105).scaled(50, 50);
 
     int columnas = (1024 * 3) / 50;  // Piso más largo que la pantalla
