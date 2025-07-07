@@ -7,7 +7,7 @@
 #include "jugador.h"
 #include "sprite.h"
 
-enum TipoEnemigo { FUEGO, DODORIA, ZARBON };
+enum TipoEnemigo { FUEGO, DODORIA, ZARBON, SAIBAMAN };
 
 class Enemigos : public QObject {
     Q_OBJECT
@@ -18,6 +18,8 @@ private:
     TipoEnemigo tipo;
     QTimer* temporizador;
     QTimer* timerDisparo = nullptr;
+    QTimer* timer;
+
 
     float velocidadY;
     float gravedad;

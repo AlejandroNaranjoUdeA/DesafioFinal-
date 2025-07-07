@@ -2,6 +2,7 @@
 #include "proyectil.h"
 #include <QRandomGenerator>
 
+
 Enemigos::Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo, QString rutaImagen, int anchoSprite, int altoSprite)
     : jugador(jugador), tipo(tipo), velocidadY(0), gravedad(0.5), vidas(3)
 {
@@ -39,9 +40,29 @@ Enemigos::Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo, Q
     }
 }
 
-void Enemigos::iniciarComportamiento() {
+/*void Enemigos::iniciarComportamiento() {
     temporizador->start(16);  // ~60 FPS
+
+}*/
+
+void Enemigos::iniciarComportamiento() {
+    if (tipo == DODORIA || tipo == ZARBON) {
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &Enemigos::moverHorizontalmente);
+        timer->start(50);
+    } else if (tipo == FUEGO) {
+        sprite->setPixmap(QPixmap(":/imagenes/bola de fuego.png").scaled(50, 50));
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &Enemigos::moverFuego);
+        timer->start(30);
+    } else if (tipo == SAIBAMAN) {
+        sprite->setPixmap(QPixmap(":/imagenes/saibaman.png").scaled(50, 60));
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &Enemigos::perseguirGoku);
+        timer->start(40);
+    }
 }
+
 
 void Enemigos::actualizarPosicion() {
     if (tipo == FUEGO) {

@@ -13,7 +13,7 @@ Juego::Juego(int nivelSeleccionado, QWidget *parent) : QGraphicsView(parent), ni
     if (nivel == 1)
         fondoCompleto.load(":/imagenes/fondo fuego.jpeg");
     else if (nivel == 2)
-        fondoCompleto.load(":/imagenes/fondo bosque.jpg");
+        fondoCompleto.load(":/imagenes/fondo4.jpg_large");
     else if (nivel == 3)
         fondoCompleto.load(":/imagenes/fondo ciudad.jpg");
 
@@ -51,7 +51,13 @@ Juego::Juego(int nivelSeleccionado, QWidget *parent) : QGraphicsView(parent), ni
     escena->addItem(textoVidas);
     actualizarTextoVidas();
 
-    escenario = new Escenario(escena);
+    //escenario = new Escenario(escena);
+    QString spriteBloque = ":/imagenes/bloque lava.jpg";  // imagen por defecto
+
+    if (nivel == 2)
+        spriteBloque = ":/imagenes/bloque escena.PNG";  // bloque para el nivel 2
+
+    escenario = new Escenario(escena, spriteBloque);
     escenario->crearPiso();
     goku->setBloques(escenario->obtenerBloques());
 
@@ -66,6 +72,19 @@ Juego::Juego(int nivelSeleccionado, QWidget *parent) : QGraphicsView(parent), ni
         Enemigos* zarbon = new Enemigos(escena, goku, ZARBON, ":/imagenes/zarbon sin fondo.png", 41, 60);
         zarbon->iniciarComportamiento();
 
+        //agregar fuego:
+        generadorEnemigos = new QTimer(this);
+        connect(generadorEnemigos, &QTimer::timeout, [=]() {
+            Enemigos* enemigo = new Enemigos(escena, goku, FUEGO, "", 42, 60);
+            enemigo->iniciarComportamiento();
+            escena->addItem(enemigo->getSprite());
+
+            int intervalo = QRandomGenerator::global()->bounded(200, 2000);
+            generadorEnemigos->start(intervalo);
+        });
+        generadorEnemigos->start(500);
+
+
         dodoria->setBloques(escenario->obtenerBloques());
         zarbon->setBloques(escenario->obtenerBloques());
 
@@ -74,8 +93,24 @@ Juego::Juego(int nivelSeleccionado, QWidget *parent) : QGraphicsView(parent), ni
         audioOutput->setVolume(50);  // Puedes ajustar el volumen
         musicaFondo->play();
     }
+    else if (nivel == 2) {
+        musicaFondo->setSource(QUrl("qrc:/sonidos/musica bosque.mp3"));
+        musicaFondo->setLoops(QMediaPlayer::Infinite);
+        audioOutput->setVolume(50);
+        musicaFondo->play();
 
-    generadorEnemigos = new QTimer(this);
+        QTimer* generadorSaibaman = new QTimer(this);
+        connect(generadorSaibaman, &QTimer::timeout, [=]() {
+            Enemigos* enemigo = new Enemigos(escena, goku, SAIBAMAN, ":/imagenes/saibaman.png", 40, 45);
+            enemigo->iniciarComportamiento();
+            enemigo->setBloques(escenario->obtenerBloques());
+            escena->addItem(enemigo->getSprite());
+        });
+        generadorSaibaman->start(4000);  // Cada 4 segundos
+    }
+
+
+    /*generadorEnemigos = new QTimer(this);
     connect(generadorEnemigos, &QTimer::timeout, [=]() {
         Enemigos* enemigo = new Enemigos(escena, goku, FUEGO, "", 42, 60);
         enemigo->iniciarComportamiento();
@@ -84,7 +119,7 @@ Juego::Juego(int nivelSeleccionado, QWidget *parent) : QGraphicsView(parent), ni
         int intervalo = QRandomGenerator::global()->bounded(200, 2000);
         generadorEnemigos->start(intervalo);
     });
-    generadorEnemigos->start(500);
+    generadorEnemigos->start(500);*/
 
 
 
