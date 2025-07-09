@@ -157,6 +157,7 @@ debug/qrc_recursos.cpp: ../../recursos.qrc \
 		../../imagenes/bloque\ lava.jpg \
 		../../imagenes/kamehameha.png \
 		../../imagenes/dodoria.jpg \
+		../../imagenes/saibaman-Photoroom.png \
 		../../imagenes/goku\ vs\ freezer.png \
 		../../imagenes/fondo\ fuego.jpeg
 	C:\Qt\6.9.0\llvm-mingw_64\bin\rcc.exe -name recursos --no-zstd ..\..\recursos.qrc -o debug\qrc_recursos.cpp

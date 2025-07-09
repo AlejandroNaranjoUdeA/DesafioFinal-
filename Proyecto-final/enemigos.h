@@ -28,13 +28,17 @@ private:
     float posicionX;
     float posicionY;
 
+    Jugador* goku;
+
     QList<QGraphicsPixmapItem*> bloquesEscenario;
 
 public:
-    Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo,
-             QString rutaImagen, int anchoSprite, int altoSprite);
+    Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo,QString rutaImagen, int anchoSprite, int altoSprite);
+    ~Enemigos();
 
     void iniciarComportamiento();
+    void perseguirGoku();
+
     void setBloques(const QList<QGraphicsPixmapItem*>& bloques);
 
     Sprite* getSprite() const { return sprite; }

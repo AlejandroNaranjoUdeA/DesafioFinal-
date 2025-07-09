@@ -25,6 +25,13 @@ Enemigos::Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo, Q
         sprite->setPos(1000, 500);
     } else if (tipo == ZARBON) {
         sprite->setPos(10, 500);
+    }else if (tipo == SAIBAMAN) {
+        sprite->setPixmap(QPixmap(":/imagenes/saibaman-Photoroom.png").scaled(50, 60));
+        sprite->setPos(QRandomGenerator::global()->bounded(500, 1500), 500);
+
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &Enemigos::perseguirGoku);
+        timer->start(40);
     }
 
     escena->addItem(sprite);
@@ -45,7 +52,17 @@ Enemigos::Enemigos(QGraphicsScene* escena, Jugador* jugador, TipoEnemigo tipo, Q
 
 }*/
 
+Enemigos::~Enemigos(){
+    if (temporizador) temporizador->stop();
+    if (timerDisparo) timerDisparo->stop();
+    if (timer) timer->stop();
+}
+
 void Enemigos::iniciarComportamiento() {
+
+    temporizador->start(16);  // ~60 FPS
+
+    /*
     if (tipo == DODORIA || tipo == ZARBON) {
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &Enemigos::moverHorizontalmente);
@@ -60,7 +77,7 @@ void Enemigos::iniciarComportamiento() {
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &Enemigos::perseguirGoku);
         timer->start(40);
-    }
+    }*/
 }
 
 
@@ -130,6 +147,34 @@ void Enemigos::disparar() {
     int offsetX = (direccion == Proyectil::Derecha) ? sprite->boundingRect().width() : -20;
 
     p->setPos(sprite->x() + offsetX, sprite->y() -10);
+}
+
+void Enemigos::perseguirGoku() {
+    /*if (!goku || !sprite) return;
+
+    QPointF posGoku = goku->getItem()->pos();
+    QPointF posSaibaman = sprite->pos();
+
+    qreal dx = 0;
+    qreal dy = 0;
+
+    if (posGoku.x() < posSaibaman.x()) dx = -2;
+    else if (posGoku.x() > posSaibaman.x()) dx = 2;
+
+    if (posGoku.y() < posSaibaman.y()) dy = -1;
+    else if (posGoku.y() > posSaibaman.y()) dy = 1;
+
+    sprite->moveBy(dx, dy);*/
+
+    if (!goku || !sprite || !sprite->scene()) return;
+
+    QPointF posGoku = goku->getItem()->pos();
+    QPointF posSaibaman = sprite->pos();
+
+    qreal dx = (posGoku.x() < posSaibaman.x()) ? -2 : 2;
+    qreal dy = (posGoku.y() < posSaibaman.y()) ? -1 : 1;
+
+    sprite->moveBy(dx, dy);
 }
 
 void Enemigos::setBloques(const QList<QGraphicsPixmapItem*>& bloques) {
